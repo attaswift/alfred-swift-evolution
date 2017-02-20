@@ -12,9 +12,9 @@ Command Line Tools).
 
 ## Download
 
-Download version 2.0.0 of [alfred-swift-evolution.alfredworkflow][download].
+Download version 2.0.1 of [alfred-swift-evolution.alfredworkflow][download].
 
-[download]: https://github.com/lorentey/alfred-swift-evolution/releases/download/v2.0.0/alfred-swift-evolution.alfredworkflow
+[download]: https://github.com/lorentey/alfred-swift-evolution/releases/download/v2.0.1/alfred-swift-evolution.alfredworkflow
 
 ## Usage
 
