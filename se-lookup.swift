@@ -102,6 +102,7 @@ struct Proposal {
         let words = query
             .components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty }
+            .map { $0.lowercased() }
         if words.count == 0 { return true }
         if words.count == 1, let number = Int(words[0]) {
             return self.number == number
