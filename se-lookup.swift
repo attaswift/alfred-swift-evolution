@@ -83,7 +83,7 @@ struct Proposal {
         self.status = Status(rawValue: (json["status"] as? [String: Any])?["state"] as? String ?? "") ?? .unknown
         self.url = baseURL.appendingPathComponent(link)
 
-        self.searchText = "\(id.lowercased()) \(number) \(title.lowercased()) \(status.description.lowercased())"
+        self.searchText = "\(id.lowercased()) \(number) \(title.lowercased()) \(status.rawValue) \(status.description.lowercased())"
     }
 
     var alfredItem: [String: String] {
