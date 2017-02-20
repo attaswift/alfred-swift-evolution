@@ -17,18 +17,6 @@ struct LookupError: LocalizedError {
     }
 }
 
-/// Like `print` but goes to stderr.
-public func complain(_ things: Any..., separator: String = " ", terminator: String = "\n") {
-    struct ErrorStream: TextOutputStream {
-        mutating func write(_ string: String) {
-            fputs(string, stderr)
-        }
-    }
-    var stream = ErrorStream()
-    let message = things.lazy.map { "\($0)" }.joined(separator: separator)
-    print(message, terminator: terminator, to: &stream)
-}
-
 struct Proposal {
     enum Status: String, CustomStringConvertible {
         case awaitingReview = ".awaitingReview"
