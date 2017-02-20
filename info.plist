@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>hu.lorentey.alfred.swift-evolution</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>19A1DB67-4FFB-406B-AB22-D350EE719F7E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>49C29C4F-E608-4034-89F2-35A382BCACE4</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Károly Lőrentey</string>
+	<key>description</key>
+	<string>Use keyword "se" followed by a proposal number to look it up</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Swift Evolution Proposals</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{query}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>49C29C4F-E608-4034-89F2-35A382BCACE4</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>se</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>2</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Getting Proposals...</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>se-lookup.swift</string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Look up swift-evolution proposal</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>19A1DB67-4FFB-406B-AB22-D350EE719F7E</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>An Alfred workflow for looking up swift-evolution proposals.
+
+Copyright 2016-2017 Károly Lőrentey &lt;karoly@lorentey.hu&gt;</string>
+	<key>uidata</key>
+	<dict>
+		<key>19A1DB67-4FFB-406B-AB22-D350EE719F7E</key>
+		<dict>
+			<key>xpos</key>
+			<integer>190</integer>
+			<key>ypos</key>
+			<integer>90</integer>
+		</dict>
+		<key>49C29C4F-E608-4034-89F2-35A382BCACE4</key>
+		<dict>
+			<key>xpos</key>
+			<integer>430</integer>
+			<key>ypos</key>
+			<integer>90</integer>
+		</dict>
+	</dict>
+	<key>version</key>
+	<string>2.0.0</string>
+	<key>webaddress</key>
+	<string>https://github.com/lorentey/alfred-swift-evolution</string>
+</dict>
+</plist>
