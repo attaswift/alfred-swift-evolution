@@ -157,6 +157,12 @@ struct AlfredItem: Encodable {
     /// (tapping Shift, or Cmd+Y). Note that quicklookurl will also accept a file path, both
     /// absolute and relative to home using ~/.
     var quicklookurl: String?
+    /// Variables that will be available to subsequent actions in the Alfred workflow when
+    /// the user selects this item.
+    ///
+    /// Example: A variable `"proposal_id": "SE-0270"` will be available in Alfred
+    /// as `{var:proposal_id}`.
+    var variables: [String: String]?
 }
 
 extension AlfredItem {
@@ -167,6 +173,12 @@ extension AlfredItem {
         self.arg = proposal.url.absoluteString
         self.autocomplete = proposal.id
         self.quicklookurl = proposal.url.absoluteString
+        self.variables = [
+            "proposal_id": proposal.id,
+            "proposal_title": proposal.title,
+            "proposal_status": proposal.status.description,
+            "proposal_url": proposal.url.absoluteString,
+        ]
     }
 
     init(error: Error) {
