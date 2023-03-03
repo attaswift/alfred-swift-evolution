@@ -67,11 +67,12 @@ extension Proposal {
         case activeReview
         case returnedForRevision
         case withdrawn
-        case deferred
+        case deferred // status is no longer in use
         case accepted
         case acceptedWithRevisions
         case rejected
         case implemented
+        case previewing
         case error
         case unknown(status: String)
 
@@ -87,6 +88,7 @@ extension Proposal {
             case ".acceptedWithRevisions": self = .acceptedWithRevisions
             case ".rejected": self = .rejected
             case ".implemented": self = .implemented
+            case ".previewing": self = .previewing
             case ".error": self = .error
             default: self = .unknown(status: dto.state)
             }
@@ -104,6 +106,7 @@ extension Proposal {
             case .acceptedWithRevisions: return "Accepted with Revisions"
             case .rejected: return "Rejected"
             case .implemented: return "Implemented"
+            case .previewing: return "Previewing"
             case .error: return "Error"
             case .unknown(let underlying): return "Unknown status: \(underlying)"
             }
