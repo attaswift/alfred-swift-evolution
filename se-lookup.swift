@@ -162,8 +162,8 @@ struct AlfredItem: Encodable {
 extension AlfredItem {
     init(proposal: Proposal) {
         self.uid = proposal.url.absoluteString
-        self.title = proposal.id
-        self.subtitle = "\(proposal.title) (\(proposal.status.description))"
+        self.title = "\(proposal.id): \(proposal.title)"
+        self.subtitle = "\(proposal.status.description) • \(proposal.title)"
         self.arg = proposal.url.absoluteString
         self.autocomplete = proposal.id
         self.quicklookurl = proposal.url.absoluteString
