@@ -4,8 +4,6 @@
 <dict>
 	<key>bundleid</key>
 	<string>hu.lorentey.alfred.swift-evolution</string>
-	<key>category</key>
-	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
 		<key>19A1DB67-4FFB-406B-AB22-D350EE719F7E</key>
@@ -20,12 +18,32 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>EEDCBD3F-DC6D-4F1D-A2A4-996A0DA4ADFC</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Copy title</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>7FF77CFD-8E46-40C0-820B-5F1D4AF4BAFA</string>
+				<key>modifiers</key>
+				<integer>1179648</integer>
+				<key>modifiersubtext</key>
+				<string>Copy Markdown link</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 	</dict>
 	<key>createdby</key>
 	<string>Károly Lőrentey</string>
 	<key>description</key>
-	<string>Use keyword "se" followed by a proposal number to look it up</string>
+	<string>Use keyword "se" followed by a proposal number or title to look it up</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -37,12 +55,14 @@
 			<dict>
 				<key>browser</key>
 				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
 				<string>{query}</string>
-				<key>utf8</key>
-				<true/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
@@ -54,8 +74,33 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{var:proposal_title}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>EEDCBD3F-DC6D-4F1D-A2A4-996A0DA4ADFC</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -92,32 +137,84 @@
 			<key>uid</key>
 			<string>19A1DB67-4FFB-406B-AB22-D350EE719F7E</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>[{var:proposal_id}: {var:proposal_title}]({var:proposal_url})</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>7FF77CFD-8E46-40C0-820B-5F1D4AF4BAFA</string>
+			<key>version</key>
+			<integer>3</integer>
 		</dict>
 	</array>
 	<key>readme</key>
 	<string>An Alfred workflow for looking up swift-evolution proposals.
 
-Copyright 2016-2017 Károly Lőrentey &lt;karoly@lorentey.hu&gt;</string>
+Copyright 2016-2017 Károly Lőrentey &lt;karoly@lorentey.hu&gt;
+
+Requirements:
+
+- The Swift compiler must be installed (e.g. by installing Xcode)
+
+The script filter makes the following variables available to subsequent actions:
+
+- {var:proposal_id} ("SE-0304"
+- {var:proposal_title} ("Structured concurrency")
+- {var:proposal_status) ("Implemented")
+- {var:proposal_url) ("https://github.com/apple/swift-evolution/blob/main/proposals/0304-structured-concurrency.md")</string>
 	<key>uidata</key>
 	<dict>
 		<key>19A1DB67-4FFB-406B-AB22-D350EE719F7E</key>
 		<dict>
 			<key>xpos</key>
-			<integer>190</integer>
+			<real>165</real>
 			<key>ypos</key>
-			<integer>90</integer>
+			<real>210</real>
 		</dict>
 		<key>49C29C4F-E608-4034-89F2-35A382BCACE4</key>
 		<dict>
 			<key>xpos</key>
-			<integer>430</integer>
+			<real>430</real>
 			<key>ypos</key>
-			<integer>90</integer>
+			<real>90</real>
+		</dict>
+		<key>7FF77CFD-8E46-40C0-820B-5F1D4AF4BAFA</key>
+		<dict>
+			<key>note</key>
+			<string>Copy Markdown link to proposal</string>
+			<key>xpos</key>
+			<real>430</real>
+			<key>ypos</key>
+			<real>350</real>
+		</dict>
+		<key>EEDCBD3F-DC6D-4F1D-A2A4-996A0DA4ADFC</key>
+		<dict>
+			<key>note</key>
+			<string>Copy proposal title</string>
+			<key>xpos</key>
+			<real>430</real>
+			<key>ypos</key>
+			<real>210</real>
 		</dict>
 	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>variablesdontexport</key>
+	<array/>
 	<key>version</key>
-	<string>2.0.1</string>
+	<string>2.1.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/attaswift/alfred-swift-evolution</string>
 </dict>
