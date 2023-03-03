@@ -170,14 +170,18 @@ Requirements:
 
 The script filter makes the following variables available to subsequent actions:
 
-- {var:proposal_id} ("SE-0304"
-- {var:proposal_title} ("Structured concurrency")
-- {var:proposal_status) ("Implemented")
-- {var:proposal_url) ("https://github.com/apple/swift-evolution/blob/main/proposals/0304-structured-concurrency.md")</string>
+- proposal_id (e.g. "SE-0304")
+- proposal_title ("Structured concurrency")
+- proposal_status ("Implemented")
+- proposal_url ("https://github.com/apple/swift-evolution/blob/main/proposals/0304-structured-concurrency.md")
+
+You can use e.g. `{var:proposal_id}` in your own actions to customize the workflow. Refer to the "Copy Markdown link" action for an example.</string>
 	<key>uidata</key>
 	<dict>
 		<key>19A1DB67-4FFB-406B-AB22-D350EE719F7E</key>
 		<dict>
+			<key>note</key>
+			<string>Script that downloads the proposal data from swift.org and filters them according to the search term.</string>
 			<key>xpos</key>
 			<real>165</real>
 			<key>ypos</key>
@@ -193,7 +197,7 @@ The script filter makes the following variables available to subsequent actions:
 		<key>7FF77CFD-8E46-40C0-820B-5F1D4AF4BAFA</key>
 		<dict>
 			<key>note</key>
-			<string>Copy Markdown link to proposal</string>
+			<string>Copy Markdown link</string>
 			<key>xpos</key>
 			<real>430</real>
 			<key>ypos</key>

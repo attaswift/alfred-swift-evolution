@@ -7,14 +7,14 @@ Written in Swift, of course.
 
 ## Requirements
 
-You must have Swift 3 installed (either by a version of Xcode or
+You must have Swift 5 installed (either by a version of Xcode or
 Command Line Tools).
 
 ## Download
 
-Download version 2.0.1 of [alfred-swift-evolution.alfredworkflow][download].
+Download version 2.1.0 of [alfred-swift-evolution.alfredworkflow][download].
 
-[download]: https://github.com/lorentey/alfred-swift-evolution/releases/download/v2.0.1/alfred-swift-evolution.alfredworkflow
+[download]: https://github.com/attaswift/alfred-swift-evolution/releases/download/v2.1.0/alfred-swift-evolution.alfredworkflow
 
 ## Usage
 
@@ -33,3 +33,20 @@ Or by keyword:
 
 ![Filter by keyword](screenshots/filter-keyword.png)
 
+Available actions:
+
+* Press Return to open the proposal in the browser.
+* Hold down Command to copy the proposal title to the clipboard.
+* Hold down Shift+Command to copy a Markdown link to the proposal to the clipboard.
+* (To copy the URL, hit Tab on a proposal and select Copy as Plain Text from the menu.)
+
+### Workflow variables
+
+The script forwards four variables to Alfred that can be used in subsequent workflow actions:
+
+* `proposal_id` (e.g. "SE-0304")
+* `proposal_title` ("Structured concurrency")
+* `proposal_status` ("Implemented")
+* `proposal_url` ("https://github.com/apple/swift-evolution/blob/main/proposals/0304-structured-concurrency.md")
+
+If you want to customize the workflow for your needs, you can use these variables in your actions. Refer to the "Copy Markdown link" action for an example.
