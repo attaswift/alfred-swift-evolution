@@ -2,23 +2,52 @@
 //
 // se-lookup.swift
 //
-// A script filter for looking up swift-evolution proposals in Alfred.
+// A script filter for looking up swift-evolution proposals
+// in Alfred <https://www.alfredapp.com/>.
 
 import Foundation
+
+struct SwiftEvolution: Decodable {
+    static let dataURL = URL(string: "https://download.swift.org/swift-evolution/v1/evolution.json")!
+
+    /// E.g. "2024-05-14T13:38:30Z"
+    var creationDate: String
+    var proposals: [ProposalDTO]
+    /// E.g. "1.0.0"
+    var schemaVersion: String
+} 
 
 /// Data transfer object definition for a Swift Evolution proposal in the
 /// JSON format used by swift.org.
 struct ProposalDTO: Decodable {
-    static let dataURL = URL(string: "https://download.swift.org/swift-evolution/proposals.json")!
-
+    /// SE-NNNN, e.g. "SE-0147"
     var id: String
     var title: String
+    /// Local path to the proposal file, e.g. "0423-dynamic-actor-isolation.md".
     var link: String
     var status: Status
+    var upcomingFeatureFlag: UpcomingFeatureFlag?
 
     struct Status: Decodable {
         var state: String
+        /// Swift version in which the proposal was implemented, e.g. "5.6"
+        /// Only present if state == "implemented"
+        var version: String?
+        /// Reason for error state. Only present if state == "error"
+        var reason: String?
     }
+}
+
+struct UpcomingFeatureFlag: Decodable {
+    /// Name of the feature flag, e.g. "ExistentialAny".
+    var flag: String
+    /// Language mode version when feature is always enabled.
+    /// Field is omitted when there is no announced language mode.
+    var enabledInLanguageMode: String?
+    /// The language release version (e.g. "5.10") when the flag is
+    /// available, if not the same as the release in which the feature is
+    /// implemented.
+    var available: String?
 }
 
 struct Proposal {
@@ -28,6 +57,7 @@ struct Proposal {
     var title: String
     var url: URL
     var status: Status
+    var upcomingFeatureFlag: UpcomingFeatureFlag?
 
     var number: Int? {
         guard let digits = id.split(separator: "-").last else { return nil }
@@ -35,7 +65,7 @@ struct Proposal {
     }
 
     var searchText: String {
-        "\(id) \(number.map(String.init(describing:)) ?? "") \(title) \(status.description) \(status.description)"
+        "\(id) \(number.map(String.init(describing:)) ?? "") \(title) \(status.description) \(upcomingFeatureFlag?.flag ?? "")"
             .lowercased()
     }
 
@@ -57,6 +87,7 @@ extension Proposal {
         self.title = dto.title.trimmingCharacters(in: .whitespacesAndNewlines)
         self.url = baseURL.appendingPathComponent(dto.link)
         self.status = Status(dto: dto.status)
+        self.upcomingFeatureFlag = dto.upcomingFeatureFlag
     }
 }
 
@@ -71,25 +102,25 @@ extension Proposal {
         case accepted
         case acceptedWithRevisions
         case rejected
-        case implemented
+        case implemented(version: String?)
         case previewing
-        case error
+        case error(reason: String?)
         case unknown(status: String)
 
         init(dto: ProposalDTO.Status) {
             switch dto.state {
-            case ".awaitingReview": self = .awaitingReview
-            case ".scheduledForReview": self = .scheduledForReview
-            case ".activeReview": self = .activeReview
-            case ".returnedForRevision": self = .returnedForRevision
-            case ".withdrawn": self = .withdrawn
-            case ".deferred": self = .deferred
-            case ".accepted": self = .accepted
-            case ".acceptedWithRevisions": self = .acceptedWithRevisions
-            case ".rejected": self = .rejected
-            case ".implemented": self = .implemented
-            case ".previewing": self = .previewing
-            case ".error": self = .error
+            case "awaitingReview": self = .awaitingReview
+            case "scheduledForReview": self = .scheduledForReview
+            case "activeReview": self = .activeReview
+            case "returnedForRevision": self = .returnedForRevision
+            case "withdrawn": self = .withdrawn
+            case "deferred": self = .deferred
+            case "accepted": self = .accepted
+            case "acceptedWithRevisions": self = .acceptedWithRevisions
+            case "rejected": self = .rejected
+            case "implemented": self = .implemented(version: dto.version)
+            case "previewing": self = .previewing
+            case "error": self = .error(reason: dto.reason)
             default: self = .unknown(status: dto.state)
             }
         }
@@ -105,16 +136,17 @@ extension Proposal {
             case .accepted: return "Accepted"
             case .acceptedWithRevisions: return "Accepted with Revisions"
             case .rejected: return "Rejected"
-            case .implemented: return "Implemented"
+            case .implemented(let version?): return "Implemented (Swift \(version))"
+            case .implemented(nil): return "Implemented"
             case .previewing: return "Previewing"
-            case .error: return "Error"
+            case .error(let reason): return "Error \(reason ?? "unknown reason"))"
             case .unknown(let underlying): return "Unknown status: \(underlying)"
             }
         }
     }
 }
 
-/// An item a Script Filter workflow returns to Alfred for display.
+/// An item that a Script Filter workflow returns to Alfred for display.
 /// Represents one row in an Alfred result set.
 ///
 /// Documentation: <https://www.alfredapp.com/help/workflows/inputs/script-filter/json/>
@@ -122,46 +154,52 @@ struct AlfredItem: Encodable {
     enum `Type`: String, Encodable {
         /// An item that is not a file.
         case `default`
-        /// "type": "file" makes Alfred treat your result as a file on your system. This allows the
-        /// user to perform actions on the file like they can with Alfred's standard file filters.
+        /// "type": "file" makes Alfred treat your result as a file on your
+        /// system. This allows the user to perform actions on the file like
+        /// they can with Alfred's standard file filters.
         case file
-        /// When returning files, Alfred will check if the file exists before presenting that result
-        /// to the user. This has a very small performance implication but makes the results as
-        /// predictable as possible. If you would like Alfred to skip this check as you are certain
-        /// that the files you are returning exist, you can use "type": "file:skipcheck".
+        /// When returning files, Alfred will check if the file exists before
+        /// presenting that result to the user. This has a very small
+        /// performance implication but makes the results as predictable as
+        /// possible. If you would like Alfred to skip this check as you are
+        /// certain that the files you are returning exist, you can use
+        /// "type": "file:skipcheck".
         case fileSkipCheck = "file:skipcheck"
     }
 
-    /// A unique identifier for the item which allows Alfred to learn about this item for subsequent
-    /// sorting and ordering of the user's actioned results.
+    /// A unique identifier for the item which allows Alfred to learn about this
+    /// item for subsequent sorting and ordering of the user's actioned results.
     ///
-    /// If you would like Alfred to always show the results in the order you return them from your
-    /// script, exclude the UID field.
+    /// If you would like Alfred to always show the results in the order you
+    /// return them from your script, exclude the UID field.
     var uid: String?
     /// The title displayed in the result row.
     var title: String
     /// The subtitle displayed in the result row.
     var subtitle: String?
-    /// The argument which is passed through the workflow to the connected output action.
-    /// Optional, but strongly recommended.
+    /// The argument which is passed through the workflow to the connected
+    /// output action. Optional, but strongly recommended.
     var arg: String?
-    /// Whether this item is valid or not. If an item is valid then Alfred will action this item
-    /// when the user presses return. If the item is not valid, Alfred will do nothing.
+    /// Whether this item is valid or not. If an item is valid then Alfred will
+    /// action this item when the user presses return. If the item is not valid,
+    /// Alfred will do nothing.
     var valid: Bool = true
-    /// An optional but recommended string you can provide which is populated into Alfred's search
-    /// field if the user auto-completes (Tab key by default) the selected result.
+    /// An optional but recommended string you can provide which is populated
+    /// into Alfred's search field if the user auto-completes (Tab key by
+    /// default) the selected result.
     var autocomplete: String?
     /// The item type.
     var type: `Type` = .default
-    /// A Quick Look URL which will be visible if the user uses the Quick Look feature within Alfred
-    /// (tapping Shift, or Cmd+Y). Note that quicklookurl will also accept a file path, both
-    /// absolute and relative to home using ~/.
+    /// A Quick Look URL which will be visible if the user uses the Quick Look
+    /// feature within Alfred (tapping Shift, or Cmd+Y). Note that quicklookurl
+    /// will also accept a file path, both absolute and relative to home
+    /// using ~/.
     var quicklookurl: String?
-    /// Variables that will be available to subsequent actions in the Alfred workflow when
-    /// the user selects this item.
+    /// Variables that will be available to subsequent actions in the Alfred
+    /// workflow when the user selects this item.
     ///
-    /// Example: A variable `"proposal_id": "SE-0270"` will be available in Alfred
-    /// as `{var:proposal_id}`.
+    /// Example: A variable `"proposal_id": "SE-0270"` will be available in
+    /// Alfred as `{var:proposal_id}`.
     var variables: [String: String]?
 }
 
@@ -182,13 +220,14 @@ extension AlfredItem {
     }
 
     init(error: Error) {
-        // Dumping an `Error`’s contents seems to be the best way to extract all the
-        // salient error information into a semi-readable string. This obviously isn’t
-        // ideal for user-facing error messages, but I think it’s acceptable for a
-        // developer tool such as this.
-        // Unfortunately, `error.localizedDescription` or the various `LocalizedError` 
-        // properties carry little to no actionable information about the failure reason
-        // for typical library errors such as Foundation.CocoaError or Swift.DecodingError.
+        // Dumping an `Error`’s contents seems to be the best way to extract all
+        // the salient error information into a semi-readable string. This
+        // obviously isn’t ideal for user-facing error messages, but I think
+        // it’s acceptable for a developer tool such as this.
+        // Unfortunately, `error.localizedDescription` or the various
+        // `LocalizedError` properties carry little to no actionable information
+        // about the failure reason for typical library errors such as
+        // Foundation.CocoaError or Swift.DecodingError.
         let title = "Error: \(error.localizedDescription)"
         var errorInfo = ""
         dump(error, to: &errorInfo)
@@ -207,10 +246,10 @@ extension AlfredItem {
 let query = CommandLine.arguments.dropFirst().joined(separator: " ")
 let result: [AlfredItem]
 do {
-    let data = try Data(contentsOf: ProposalDTO.dataURL)
+    let data = try Data(contentsOf: SwiftEvolution.dataURL)
     let decoder = JSONDecoder()
-    let allProposals = try decoder.decode([ProposalDTO].self, from: data)
-    result = allProposals
+    let swiftEvolution = try decoder.decode(SwiftEvolution.self, from: data)
+    result = swiftEvolution.proposals
         .map(Proposal.init(dto:))
         .filter { $0.matches(query) }
         .sorted { ($0.number ?? 0) > ($1.number ?? 0) }
