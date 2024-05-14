@@ -33,6 +33,10 @@ struct ProposalDTO: Decodable {
         /// Swift version in which the proposal was implemented, e.g. "5.6"
         /// Only present if state == "implemented"
         var version: String?
+        /// Start and end date of the review period, e.g. "2024-05-08T00:00:00Z"
+        /// Only present if state == "activeReview" (and maybe other states?)
+        var start: String?
+        var end: String?
         /// Reason for error state. Only present if state == "error"
         var reason: String?
     }
@@ -95,7 +99,7 @@ extension Proposal {
     enum Status: CustomStringConvertible {
         case awaitingReview
         case scheduledForReview
-        case activeReview
+        case activeReview(interval: DateInterval?)
         case returnedForRevision
         case withdrawn
         case deferred // status is no longer in use
@@ -111,7 +115,18 @@ extension Proposal {
             switch dto.state {
             case "awaitingReview": self = .awaitingReview
             case "scheduledForReview": self = .scheduledForReview
-            case "activeReview": self = .activeReview
+            case "activeReview":
+                let interval: DateInterval?
+                if let start = dto.start, let end = dto.end,
+                    let startDate = try? Date.ISO8601FormatStyle.iso8601.parse(start),
+                    let endDate = try? Date.ISO8601FormatStyle.iso8601.parse(end),
+                    startDate <= endDate
+                {
+                    interval = DateInterval(start: startDate, end: endDate)
+                } else {
+                    interval = nil
+                }
+                self = .activeReview(interval: interval)
             case "returnedForRevision": self = .returnedForRevision
             case "withdrawn": self = .withdrawn
             case "deferred": self = .deferred
@@ -129,7 +144,12 @@ extension Proposal {
             switch self {
             case .awaitingReview: return "Awaiting Review"
             case .scheduledForReview: return "Scheduled for Review"
-            case .activeReview: return "Active Review"
+            case .activeReview(let interval?):
+                let formatStyle = Date.ISO8601FormatStyle(timeZone: .gmt).year().month().day()
+                let start = interval.start.formatted(formatStyle)
+                let end = interval.end.formatted(formatStyle)
+                return "Active Review (\(start) to \(end))"
+            case .activeReview(nil): return "Active Review"
             case .returnedForRevision: return "Returned for Revision"
             case .withdrawn: return "Withdrawn"
             case .deferred: return "Deferred"
