@@ -227,7 +227,14 @@ extension AlfredItem {
     init(proposal: Proposal) {
         self.uid = proposal.url.absoluteString
         self.title = "\(proposal.id): \(proposal.title)"
-        self.subtitle = "\(proposal.status.description)"
+        var subtitle = proposal.status.description
+        if let upcomingFeatureFlag = proposal.upcomingFeatureFlag {
+            subtitle.append(" · Feature flag: \(upcomingFeatureFlag.flag)")
+            if let languageMode = upcomingFeatureFlag.enabledInLanguageMode {
+                subtitle.append(" (enabled in Swift \(languageMode) language version)")
+            }
+        }
+        self.subtitle = subtitle
         self.arg = proposal.url.absoluteString
         self.autocomplete = proposal.id
         self.quicklookurl = proposal.url.absoluteString
