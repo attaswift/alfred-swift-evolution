@@ -41,7 +41,7 @@
 		</array>
 	</dict>
 	<key>createdby</key>
-	<string>Károly Lőrentey</string>
+	<string>Károly Lőrentey &amp; Ole Begemann</string>
 	<key>description</key>
 	<string>Use keyword "se" followed by a proposal number or title to look it up</string>
 	<key>disabled</key>
@@ -162,7 +162,7 @@
 	<key>readme</key>
 	<string>An Alfred workflow for looking up swift-evolution proposals.
 
-Copyright 2016-2017 Károly Lőrentey &lt;karoly@lorentey.hu&gt;
+Copyright 2016–2024 Károly Lőrentey &lt;karoly@lorentey.hu&gt; and Ole Begemann &lt;ole@oleb.net&gt;
 
 Requirements:
 
@@ -172,7 +172,7 @@ The script filter makes the following variables available to subsequent actions:
 
 - proposal_id (e.g. "SE-0304")
 - proposal_title ("Structured concurrency")
-- proposal_status ("Implemented")
+- proposal_status ("Implemented (Swift 5.5)")
 - proposal_url ("https://github.com/apple/swift-evolution/blob/main/proposals/0304-structured-concurrency.md")
 
 You can use e.g. `{var:proposal_id}` in your own actions to customize the workflow. Refer to the "Copy Markdown link" action for an example.</string>
