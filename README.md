@@ -7,14 +7,14 @@ Written in Swift, of course.
 
 ## Requirements
 
-You must have Swift 5 installed (either by a version of Xcode or
+You must have Swift 5 or newer installed (either by a version of Xcode or
 Command Line Tools).
 
 ## Download
 
-Download version 2.1.0 of [alfred-swift-evolution.alfredworkflow][download].
+Download version 2.2.0 of [alfred-swift-evolution.alfredworkflow][download].
 
-[download]: https://github.com/attaswift/alfred-swift-evolution/releases/download/v2.1.0/alfred-swift-evolution.alfredworkflow
+[download]: https://github.com/attaswift/alfred-swift-evolution/releases/download/v2.2.0/alfred-swift-evolution.alfredworkflow
 
 ## Usage
 
